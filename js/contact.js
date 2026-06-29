@@ -18,8 +18,9 @@
     function close() { modal.classList.remove("open"); document.body.classList.remove("cmf-on"); }
     window.__contact = open;
 
-    /* every "Start a Project" CTA opens the form (stop bubbling so room-nav doesn't also fire) */
-    Array.prototype.forEach.call(document.querySelectorAll(".cta"), function (el) {
+    /* every "Start a Project" CTA + the nav "Contact" link open the form
+       (stop bubbling so room-nav doesn't also fire) */
+    Array.prototype.forEach.call(document.querySelectorAll(".cta, [data-contact]"), function (el) {
       el.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); open(); });
     });
     if (scrim) scrim.addEventListener("click", close);

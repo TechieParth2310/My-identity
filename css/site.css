@@ -434,6 +434,19 @@ img{display:block;max-width:100%}
 .cmf-send:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(199,146,79,.4)}
 .cmf-alt{font-family:var(--mono);font-size:11px;color:var(--mut);text-align:center;margin-top:6px}
 .cmf-alt a{color:var(--brass-l)}
+/* quick connect — WhatsApp / Call / Email */
+.cmf-quick{display:flex;gap:9px;margin-bottom:16px;flex-wrap:wrap}
+.cmf-q{flex:1;min-width:92px;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink);border:1px solid var(--line2);
+  border-radius:10px;padding:12px 10px;background:rgba(255,255,255,.02);transition:.25s var(--ease)}
+.cmf-q:hover{border-color:var(--brass);color:var(--brass);transform:translateY(-2px)}
+.cmf-q.wa{color:var(--green);border-color:rgba(130,207,144,.4)}
+.cmf-q.wa:hover{border-color:var(--green);color:var(--green);background:rgba(130,207,144,.08)}
+.cmf-q.wa i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:scrPulse 1.6s ease-in-out infinite}
+.cmf-or{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.cmf-or span{flex:0 0 auto}
+.cmf-or::before,.cmf-or::after{content:"";flex:1;height:1px;background:var(--line)}
+.nm-links a{color:var(--mut)}
 .cmf-sent{text-align:center;padding:18px 0}
 .cmf-tick{width:54px;height:54px;border-radius:50%;border:2px solid var(--green);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px}
 .cmf-sent h3{font-family:var(--serif);font-size:24px;margin-bottom:8px}
