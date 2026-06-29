@@ -10,6 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css" />
+<!-- Favicons / PK monogram (relative paths → work from file:// and on Vercel) -->
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#0C0E12" />
 </head>
 <body>
 
@@ -35,7 +43,7 @@
   </div>
 
   <!-- LIVING ATMOSPHERE (site-wide, behind content) -->
-  <div class="atmos" id="atmos" aria-hidden="true"><div class="ap-rays"></div><div class="atmos-plate"></div><div class="ap-smoke"></div><canvas id="atmosCanvas"></canvas></div>
+  <div class="atmos" id="atmos" aria-hidden="true"><canvas id="atmosCanvas"></canvas></div>
 
   <div class="progress" id="progress"></div>
   <div class="cur-ring" id="curRing"></div>
@@ -48,10 +56,27 @@
       <a href="#work">The Work</a>
       <a href="#method">The Method</a>
       <a href="#about">About</a>
+      <button class="mode-toggle" id="modeToggle" type="button" role="switch" aria-checked="false" aria-label="Toggle Builder Mode"><span class="mt-l">Studio</span><span class="mt-l">Builder</span><i class="mt-knob"></i></button>
       <button class="kbd-chip" id="kChip" type="button" aria-label="Open command menu"><span>⌘</span>K</button>
       <a class="cta" href="#contact">Start a Project<i></i></a>
     </nav>
+    <button class="nav-burger" id="navBurger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu"><span></span><span></span><span></span></button>
   </header>
+
+  <!-- MOBILE MENU (full-screen overlay) -->
+  <div class="navmenu" id="navMenu" aria-hidden="true">
+    <nav class="navmenu-inner" aria-label="Mobile navigation">
+      <a href="#work"><span class="nm-no">01</span>The Work</a>
+      <a href="#method"><span class="nm-no">02</span>The Method</a>
+      <a href="#about"><span class="nm-no">03</span>About</a>
+      <a href="#journey"><span class="nm-no">04</span>The Journey</a>
+      <a class="nm-cta" href="#contact"><span class="nm-no">05</span>Start a Project <i>→</i></a>
+    </nav>
+    <div class="navmenu-foot">
+      <span>Chalisgaon, Maharashtra</span>
+      <a href="https://github.com/TechieParth2310" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
 
   <!-- HERO -->
   <section class="hero" id="top">
@@ -77,8 +102,8 @@
       </h1>
       <p class="h-sub a4">Most AI demos impress.<br>Production systems survive.<br>I build the second.</p>
       <div class="h-stats a5">
-        <div class="st"><b>6</b><span>Products<br>people use</span></div>
-        <div class="st"><b>₹4Cr</b><span>Vendor cost<br>replaced</span></div>
+        <div class="st"><b>6</b><span>Products<br>shipped</span></div>
+        <div class="st"><b>2</b><span>apps in<br>app stores</span></div>
         <div class="st"><b>Days</b><span>idea →<br>production</span></div>
       </div>
       <div class="h-now a6"><span class="dot"></span>Now showing — <b>ApplySync</b> · live in production</div>
@@ -138,17 +163,13 @@
       <div class="method-copy">
         <div class="sec-no">02 — The Method</div>
         <h2 class="sec-title sm">Ask my work.</h2>
-        <p class="sec-lead">Don't take my word for it — interrogate the record. Pick a question; I'll answer it from real projects.</p>
+        <p class="sec-lead">Don't take my word for it — query the record. Pick a Studio Record or ask anything; every answer shows its reasoning and the sources behind it.</p>
         <a class="link-arrow" href="#contact">Start a conversation →</a>
       </div>
-      <div class="terminal" id="terminal">
-        <div class="t-bar"><i></i><i></i><i></i></div>
-        <div class="t-body">
-          <div class="t-q" id="tQ">&gt; how do you decide what to build?</div>
-          <pre class="t-a" id="tA">I start from the problem, not the model. What hurts, who feels it, and is AI actually the right tool? Most ideas die here — and that's the point. I only build what earns a place in production.</pre>
-        </div>
-        <div class="t-chips" id="tChips"></div>
-        <form class="t-foot" id="tForm"><span class="tp">&gt;</span><input id="tInput" class="t-input" type="text" placeholder="ask me anything about my work…" autocomplete="off" aria-label="Ask my work" /><span class="rag">powered by RAG</span></form>
+      <div class="ke" id="ke">
+        <div class="ke-bar"><i></i><i></i><i></i><span class="ke-title">studio://records</span><span class="ke-rag"><b></b>knowledge engine</span></div>
+        <div class="ke-body" id="keBody"></div>
+        <form class="ke-foot" id="keForm"><span class="ke-prompt">&gt;</span><input id="keInput" class="ke-input" type="text" placeholder="ask anything, or pick a record…" autocomplete="off" aria-label="Ask my work" /><button class="ke-send" type="submit" aria-label="Ask">↵</button></form>
       </div>
     </div>
   </section>
@@ -161,13 +182,13 @@
         <h2 class="sec-title">Most engineers show code.<br>Here's the part that actually matters.</h2>
         <p class="sec-lead">Tools change every six months. Judgment compounds. This is the loop I run on every product.</p>
       </div>
-      <div class="brain-grid">
-        <div class="brain-card"><span class="bc-n">01</span><b>Problem</b><p>Start from what hurts and who feels it — never from the model.</p></div>
-        <div class="brain-card"><span class="bc-n">02</span><b>Judgment</b><p>Is AI even the right tool here? Most ideas die at this question.</p></div>
-        <div class="brain-card"><span class="bc-n">03</span><b>Architecture</b><p>Design the system around the model: boundaries, fallbacks, guardrails.</p></div>
-        <div class="brain-card"><span class="bc-n">04</span><b>Trade-offs</b><p>Decide what to make swappable and what to harden. Buy future speed now.</p></div>
-        <div class="brain-card"><span class="bc-n">05</span><b>Ship</b><p>Direct AI for the volume; own the calls. Days, not months.</p></div>
-        <div class="brain-card"><span class="bc-n">06</span><b>Review</b><p>Watch real usage. Keep what earns its place; cut the rest.</p></div>
+      <div class="brain-flow">
+        <div class="bf-step"><span class="bf-node">01</span><div class="bf-card"><b>Problem</b><p>Start from what hurts and who feels it — never from the model.</p></div></div>
+        <div class="bf-step"><span class="bf-node">02</span><div class="bf-card"><b>Judgment</b><p>Is AI even the right tool here? Most ideas die at this question.</p></div></div>
+        <div class="bf-step"><span class="bf-node">03</span><div class="bf-card"><b>Architecture</b><p>Design the system around the model: boundaries, fallbacks, guardrails.</p></div></div>
+        <div class="bf-step"><span class="bf-node">04</span><div class="bf-card"><b>Trade-offs</b><p>Decide what to make swappable and what to harden. Buy future speed now.</p></div></div>
+        <div class="bf-step"><span class="bf-node">05</span><div class="bf-card"><b>Ship</b><p>Direct AI for the volume; own the calls. Days, not months.</p></div></div>
+        <div class="bf-step"><span class="bf-node">06</span><div class="bf-card"><b>Review</b><p>Watch real usage. Keep what earns its place; cut the rest.</p></div></div>
       </div>
     </div>
   </section>
@@ -188,6 +209,28 @@
         <div class="builder-step"><span class="bt-img" style="background-image:url('assets/builder-5.jpg')"></span><div class="bt-txt"><span class="bt">5:41 AM</span><p>Deploy complete. Logs quiet.</p></div></div>
         <div class="builder-step"><span class="bt-img" style="background-image:url('assets/builder-6.jpg')"></span><div class="bt-txt"><span class="bt">9:02 AM</span><p>The team logs in. It just works. Nobody knows.</p></div></div>
       </div>
+      <div class="builder-term" id="builderTerm">
+        <div class="bt-bar"><i></i><i></i><i></i><span>~/deploy</span><span class="bt-live">● live</span></div>
+        <div class="bt-log" id="btLog"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIELD NOTES -->
+  <section class="band" id="notes">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">— Field Notes</div>
+        <h2 class="sec-title">Lessons, in my own words.</h2>
+        <p class="sec-lead">The opinionated stuff — what I rejected, what broke, and what I'd do again.</p>
+      </div>
+      <div class="notes-list">
+        <details class="note"><summary><span class="note-t">Prompting isn't engineering</span><span class="note-tag">AI</span></summary><p>A clever prompt is a demo. The engineering is the system around it — fallbacks, daily budgets, guardrails, a kill switch. That's what survives contact with real users.</p></details>
+        <details class="note"><summary><span class="note-t">The Firebase decision</span><span class="note-tag">Architecture</span></summary><p>For ApplySync I chose Firebase over Postgres. It cut deploy from days to hours and kept the early build simple. Postgres would have doubled the complexity for value I didn't need yet — and I can migrate later if scale demands it.</p></details>
+        <details class="note"><summary><span class="note-t">Distribution beat code</span><span class="note-tag">Lesson</span></summary><p>ApplySync worked end to end and launched to almost zero users. The lesson reorganized how I build: shipping isn't the finish line, it's the start of the real problem — getting people to use it.</p></details>
+        <details class="note"><summary><span class="note-t">Governing AI you can't fully trust</span><span class="note-tag">Healthcare</span></summary><p>For I Am Still Alive I assume the model will sometimes be wrong. So: de-identify before any call, audit every request, cap usage, and keep one switch that halts all AI instantly. Safety over uptime.</p></details>
+        <details class="note"><summary><span class="note-t">Why one swappable AI layer</span><span class="note-tag">Architecture</span></summary><p>On the conference platform every model sits behind a single interface. When a better/cheaper model appears, it's a one-line swap — not a refactor across 35 data models.</p></details>
+      </div>
     </div>
   </section>
 
@@ -198,13 +241,133 @@
       <div class="about-copy">
         <div class="sec-no">03 — About</div>
         <h2 class="about-h">I don't build demos.<br>I build products.</h2>
-        <p class="about-p">I care about systems that work. I care about users who trust them. I care about impact that compounds. I'm an AI-native builder from Pune — I design the architecture, direct the AI, and own the outcome end to end.</p>
+        <p class="about-p">I care about systems that work. I care about users who trust them. I care about impact that compounds. I'm an AI-native builder from Chalisgaon, Maharashtra — I design the architecture, direct the AI, and own the outcome end to end.</p>
         <div class="sig">Parth</div>
       </div>
-      <div class="about-values">
-        <div class="val"><b>Shipped</b><span>Real products</span></div>
-        <div class="val"><b>Solved</b><span>Real problems</span></div>
-        <div class="val"><b>Created</b><span>Real impact</span></div>
+      <div class="about-story">
+        <div class="as-step"><span class="as-dot"></span><div><b>Foundations</b><p>Learned by building — apps, full-stack, the hard way.</p></div></div>
+        <div class="as-step"><span class="as-dot"></span><div><b>Production</b><p>Real systems: healthcare AI, events, internal tools.</p></div></div>
+        <div class="as-step"><span class="as-dot"></span><div><b>AI-native</b><p>6 products shipped by directing AI end to end.</p></div></div>
+        <div class="as-step"><span class="as-dot"></span><div><b>Now</b><p>Building systems people rely on, from Chalisgaon, Maharashtra.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE JOURNEY -->
+  <section class="band" id="journey">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">— The Journey</div>
+        <h2 class="sec-title">Becoming the builder.</h2>
+        <p class="sec-lead">Not a résumé — a path. What I built, in order.</p>
+      </div>
+      <div class="jr-line">
+        <div class="jr-step"><span class="jr-year">2022</span><span class="jr-dot"></span><div class="jr-c"><b>Joined VIT Vellore</b><span>Electronics &amp; Communication Engineering</span></div></div>
+        <div class="jr-step"><span class="jr-year">·</span><span class="jr-dot"></span><div class="jr-c"><b>Fundamentals first</b><span>DSA · competitive programming · problem-solving</span></div></div>
+        <div class="jr-step"><span class="jr-year">·</span><span class="jr-dot"></span><div class="jr-c"><b>Learned to build</b><span>Web development · Flutter · Firebase · React</span></div></div>
+        <div class="jr-step"><span class="jr-year">·</span><span class="jr-dot"></span><div class="jr-c"><b>Humanity Founders Hub <em>· US startup</em></b><span>Mobile Engineer — shipped production Flutter apps</span></div></div>
+        <div class="jr-step"><span class="jr-year">·</span><span class="jr-dot"></span><div class="jr-c"><b>I Am Still Alive <em>· US healthcare</em></b><span>Product Developer — architecture &amp; product decisions</span></div></div>
+        <div class="jr-step"><span class="jr-year">·</span><span class="jr-dot"></span><div class="jr-c"><b>Built ApplySync</b><span>Founder · AI Product Engineer — full-stack + AI, solo</span></div></div>
+        <div class="jr-step"><span class="jr-year">2026</span><span class="jr-dot"></span><div class="jr-c"><b>Graduated</b><span>B.Tech · Electronics &amp; Communication</span></div></div>
+        <div class="jr-step jr-now"><span class="jr-year">now</span><span class="jr-dot"></span><div class="jr-c"><b>Shipping at I Am Still Alive &amp; ApplySync</b><span>From Chalisgaon, Maharashtra — idea to production, end to end</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE MISSIONS -->
+  <section class="band" id="missions">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">— The Missions</div>
+        <h2 class="sec-title">Where I've built.</h2>
+        <p class="sec-lead">Three teams. Three roles. What I actually shipped.</p>
+      </div>
+      <div class="missions">
+        <article class="mission">
+          <div class="ms-tag">Mission 01</div>
+          <h3>Humanity Founders Hub</h3>
+          <div class="ms-meta"><span>US startup</span><span>Mobile Engineer</span></div>
+          <p>Shipped production Flutter apps end to end — authentication, REST integrations, performance tuning and real production debugging across Android &amp; iOS.</p>
+          <div class="ms-built"><b>Built</b><span>Flutter</span><span>Firebase</span><span>REST APIs</span><span>In-app purchases</span></div>
+        </article>
+        <article class="mission">
+          <div class="ms-tag">Mission 02</div>
+          <h3>I Am Still Alive</h3>
+          <div class="ms-meta"><span>US healthcare platform</span><span>Product Developer</span><span class="ms-cur">● Current</span></div>
+          <p>Owned architecture and product decisions on an oncology-support platform, with AI-assisted development — working directly with CEO Danielle Bellini.</p>
+          <div class="ms-built"><b>Built</b><span>Full-stack</span><span>Governed AI</span><span>Architecture</span><span>Product decisions</span></div>
+          <button class="ms-cta" type="button" data-open="iasa">Open case study →</button>
+        </article>
+        <article class="mission">
+          <div class="ms-tag">Mission 03</div>
+          <h3>ApplySync</h3>
+          <div class="ms-meta"><span>My startup</span><span>Founder · AI Product Engineer</span><span class="ms-cur">● Current</span></div>
+          <p>An AI SaaS that discovers jobs, rewrites résumés per ATS, applies through Gmail and auto-fills forms via a Chrome extension — designed and built solo, front to back.</p>
+          <div class="ms-built"><b>Built</b><span>React</span><span>Node</span><span>Firebase</span><span>OpenAI · NIM</span><span>Chrome MV3</span><span>Razorpay</span></div>
+          <button class="ms-cta" type="button" data-open="applysync">Open case study →</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE TOOLKIT -->
+  <section class="band" id="skills">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">— The Stack</div>
+        <h2 class="sec-title">What I can build.</h2>
+        <p class="sec-lead">Not a badge wall — the capabilities behind the products.</p>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-col"><h4>Frontend Engineering</h4><p class="skill-d">Interfaces people actually use.</p><div class="chips"><span>React</span><span>Next.js</span><span>Flutter</span><span>Tailwind</span></div></div>
+        <div class="skill-col"><h4>Backend Systems</h4><p class="skill-d">APIs, data, auth, real-time.</p><div class="chips"><span>Node</span><span>Express</span><span>Firebase</span><span>Supabase</span><span>Django</span><span>Prisma</span></div></div>
+        <div class="skill-col"><h4>AI &amp; LLMs</h4><p class="skill-d">Systems around the model — not just prompts.</p><div class="chips"><span>OpenAI</span><span>NVIDIA NIM</span><span>RAG / embeddings</span><span>Prompt engineering</span></div></div>
+        <div class="skill-col"><h4>Infrastructure</h4><p class="skill-d">Ship it and keep it running.</p><div class="chips"><span>Vercel</span><span>Railway</span><span>GitHub Actions</span><span>Cloudflare R2</span></div></div>
+        <div class="skill-col"><h4>Product &amp; Automation</h4><p class="skill-d">Turning a demo into a product.</p><div class="chips"><span>Chrome MV3</span><span>Telegram bots</span><span>Cron jobs</span><span>Razorpay</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE RECORD -->
+  <section class="band" id="record">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">— The Record</div>
+        <h2 class="sec-title">Proof over promises.</h2>
+        <p class="sec-lead">Milestones, open source, and what I'm building right now.</p>
+      </div>
+      <div class="record-grid">
+        <div class="rec-block">
+          <h4>Milestones</h4>
+          <ul>
+            <li>6 production systems shipped</li>
+            <li>2 apps live — App Store &amp; Google Play</li>
+            <li>AI products running in production</li>
+            <li>A Chrome extension across 46+ sites</li>
+            <li>A governed healthcare-AI platform</li>
+            <li>Founder of an AI SaaS</li>
+          </ul>
+        </div>
+        <div class="rec-block">
+          <h4>Featured repositories</h4>
+          <ul>
+            <li><a href="https://github.com/TechieParth2310/video-classification-womens-safety" target="_blank" rel="noopener">Video Classification — women's safety</a></li>
+            <li>ApplySync — AI job automation</li>
+            <li>MediFlow — hospital platform</li>
+            <li>IOT_ANALYTICS — realtime dashboard</li>
+            <li>FaithConnect</li>
+          </ul>
+          <a class="link-arrow" href="https://github.com/TechieParth2310" target="_blank" rel="noopener">All repos on GitHub →</a>
+        </div>
+        <div class="rec-block rec-now">
+          <h4>Currently</h4>
+          <ul class="now-list">
+            <li><span>Building</span> ApplySync</li>
+            <li><span>Learning</span> agentic systems</li>
+            <li><span>Research</span> production AI architecture</li>
+            <li><span>Reading</span> Designing Data-Intensive Applications</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -216,9 +379,10 @@
         <div>
           <p class="foot-lead">Let's build something<br>that actually matters.</p>
           <a class="cta big" href="mailto:parthkothawade2310@gmail.com">Start a Project →</a>
+          <div class="foot-studio"><span class="fst-dot" id="fstDot"></span><b id="fstMsg">Studio</b> · <span id="fstClock">—</span><i class="fst-cur"></i></div>
         </div>
         <div class="foot-status">
-          <div class="fs"><span>Location</span><b>Pune, India</b></div>
+          <div class="fs"><span>Location</span><b>Chalisgaon, Maharashtra</b></div>
           <div class="fs"><span>Time</span><b id="clock">—</b></div>
           <div class="fs"><span>Status</span><b class="ok">Available for meaningful work<i></i></b></div>
           <div class="fs"><span>Connect</span><b><a href="https://github.com/TechieParth2310" target="_blank" rel="noopener">GitHub</a> · <a href="mailto:parthkothawade2310@gmail.com">Email</a></b></div>
@@ -247,6 +411,27 @@
     </div>
   </div>
 
+  <!-- CONTACT MODAL -->
+  <div class="cmf" id="contactModal" role="dialog" aria-modal="true" aria-label="Start a project">
+    <div class="cmf-scrim" id="cmfScrim"></div>
+    <div class="cmf-box">
+      <button class="cmf-close" id="cmfClose" type="button" aria-label="Close">✕</button>
+      <div class="cmf-head">
+        <div class="cmf-kick">Start a project</div>
+        <h3>Let's build something that matters.</h3>
+        <p>Tell me what you're thinking — sending opens your email, addressed straight to me.</p>
+      </div>
+      <form id="cmfForm" class="cmf-form">
+        <label>Your name<input type="text" id="cmfName" required autocomplete="name" /></label>
+        <label>Your email<input type="email" id="cmfEmail" required autocomplete="email" /></label>
+        <label>What's this about?<select id="cmfType"><option>A project / build</option><option>A role / hiring</option><option>Just saying hi</option></select></label>
+        <label>Message<textarea id="cmfMsg" rows="4" required></textarea></label>
+        <button type="submit" class="cmf-send">Send it →</button>
+        <div class="cmf-alt">or email me directly: <a href="mailto:parthkothawade2310@gmail.com">parthkothawade2310@gmail.com</a></div>
+      </form>
+    </div>
+  </div>
+
   <!-- SOUND TOGGLE -->
   <button class="snd" id="snd" type="button" aria-label="Toggle sound"><span class="bars"><i></i><i></i><i></i><i></i></span></button>
 
@@ -261,5 +446,11 @@
   <script src="js/metrics.js"></script>
   <script src="js/eggs.js"></script>
   <script src="js/hints.js"></script>
+  <script src="js/method.js"></script>
+  <script src="js/builder.js"></script>
+  <script src="js/production.js"></script>
+  <script src="js/contact.js"></script>
+  <script src="js/cards.js"></script>
+  <script src="js/nav.js"></script>
 </body>
 </html>

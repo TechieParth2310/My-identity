@@ -6,7 +6,7 @@
   "use strict";
   try {
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var MAP = { top: "Top", work: "The Work", method: "The Method", brain: "How I Think", builder: "The Builder", about: "About", contact: "Start a Project" };
+    var MAP = { top: "Top", work: "The Work", method: "The Method", brain: "How I Think", builder: "The Builder", notes: "Field Notes", about: "About", journey: "The Journey", missions: "The Missions", skills: "The Stack", record: "The Record", contact: "Start a Project" };
     var room = document.createElement("div"); room.className = "room";
     room.innerHTML = '<span class="label"></span>';
     document.body.appendChild(room);

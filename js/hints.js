@@ -27,6 +27,7 @@
       '<div class="help-item" data-act="ask"><span class="ic">✦</span>Ask my work — chat with my portfolio<span class="kbd">type</span></div>' +
       '<div class="help-item" data-act="dev"><span class="ic">⌥</span>Developer mode — my live GitHub<span class="kbd">~</span></div>' +
       '<div class="help-item" data-act="build"><span class="ic">▶</span>Watch me build this site<span class="kbd">play</span></div>' +
+      '<div class="help-item" data-act="builder"><span class="ic">▦</span>Builder Mode — the engineering<span class="kbd">dossier</span></div>' +
       '<div class="help-item" data-act="gold"><span class="ic">✦</span>Golden mode<span class="kbd">konami</span></div>' +
       '<div class="help-item" data-act="sound"><span class="ic">♪</span>Toggle sound<span class="kbd">click</span></div>';
     document.body.appendChild(panel);
@@ -45,9 +46,10 @@
       if (act === "palette" && window.__palette) window.__palette.toggle();
       else if (act === "dev" && window.__toggleDev) window.__toggleDev();
       else if (act === "build" && window.__buildMode) window.__buildMode();
+      else if (act === "builder" && window.__builder) window.__builder.toggle();
       else if (act === "ask") {
         var m = document.getElementById("method"); if (m) m.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-        setTimeout(function () { var i = document.getElementById("tInput"); if (i) i.focus(); }, reduce ? 0 : 700);
+        setTimeout(function () { var i = document.getElementById("keInput"); if (i) i.focus(); }, reduce ? 0 : 700);
       } else if (act === "gold") {
         document.body.classList.toggle("gold-theme");
         if (window.__toast) window.__toast(document.body.classList.contains("gold-theme") ? "✦ <b>Golden mode</b> on" : "back to brass");

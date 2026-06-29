@@ -33,15 +33,15 @@
         r: Math.random() * 2.2 + 0.5,
         s: Math.random() * 0.22 + 0.05,           // rise speed
         d: Math.random() * 0.2 - 0.1,             // drift
-        a: Math.random() * 0.4 + 0.12,            // base alpha
+        a: Math.random() * 0.18 + 0.05,           // base alpha (faint, ~0.1)
         z: Math.random() * 0.8 + 0.2,             // depth (parallax factor)
         tw: Math.random() * 6.28
       };
     }
     function seed() {
       parts = [];
-      var cap = lowPow ? 36 : 70;
-      var n = Math.max(22, Math.min(cap, Math.round(W / 26)));   // density scales with width / power
+      var cap = lowPow ? 14 : 24;
+      var n = Math.max(12, Math.min(cap, Math.round(W / 60)));   // ~15–25 faint motes; density scales with width / power
       for (var i = 0; i < n; i++) parts.push(mk());
     }
     function frame() {

@@ -33,7 +33,7 @@
     function boot() {
       body.innerHTML = "";
       line('<span class="ok">$</span> whoami');
-      line('Parth Kothawade — AI Product Engineer · Pune, India', "br");
+      line('Parth Kothawade — AI Product Engineer · Chalisgaon, Maharashtra', "br");
       var ua = navigator.userAgent.match(/(Chrome|Firefox|Safari|Edg)\/[\d.]+/);
       line('<span class="dim">runtime:</span> ' + (ua ? ua[0] : navigator.platform) +
            '  ·  <span class="dim">viewport:</span> ' + innerWidth + '×' + innerHeight +

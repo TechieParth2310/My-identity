@@ -20,7 +20,7 @@ var BASE  = process.env.NVIDIA_BASE_URL || "https://integrate.api.nvidia.com/v1"
 var MODEL = process.env.AI_MODEL_FAST   || "meta/llama-3.1-8b-instruct";
 
 var FACTS = [
-  'Parth Kothawade — AI Product Engineer, Pune, India. Tagline: "I build AI products that people actually use."',
+  'Parth Kothawade — AI Product Engineer, Chalisgaon, Maharashtra. Tagline: "I build AI products that people actually use."',
   'He is an AI-native builder: he designs the architecture, makes the calls, and directs AI tools (Cursor/Claude/ChatGPT) to write implementation, then integrates, debugs and ships. His value is vision, system design, orchestration and shipping. He ships in days, not months. He is honest that he is deepening CS fundamentals, distribution/marketing and business English.',
   'Contact: parthkothawade2310@gmail.com. GitHub: github.com/TechieParth2310. Education: B.Tech in Electronics & Communication, graduated 2026. He works at Humanity Founders Hub (the company behind "I Am Still Alive").',
   'PROJECT 1 — ApplySync (his own startup, live at applysync.in): AI job-application automation. A 24/7 listener (GramJS) watches 50+ Telegram job channels, an AI layer (OpenAI with NVIDIA NIM fallback) scores fit and tailors the résumé per ATS, then auto-applies and sends outreach via the user\'s own Gmail. A Chrome MV3 extension auto-fills 46+ application sites. React 19 dashboard, Razorpay billing, Vercel + Railway. Honest lesson: it launched with almost no paying users — distribution is the real game.',

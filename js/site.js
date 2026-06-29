@@ -116,15 +116,15 @@
   function placeScreen(){
     if(!stage || !screenEl) return;
     var W = stage.clientWidth, H = stage.clientHeight;
-    if(W < 600){ return; }                       // hidden on phones via CSS
-    var sc = Math.max(W/SCR.iw, H/SCR.ih);
+    if(!W || !H){ return; }                       // not laid out yet
+    var sc = Math.max(W/SCR.iw, H/SCR.ih);        // object-fit:cover scale (works at any aspect)
     var rw = SCR.iw*sc, rh = SCR.ih*sc;
-    var ox = (W-rw)/2, oy = (H-rh)/2;            // object-position 50% 50%
+    var ox = (W-rw)/2, oy = (H-rh)/2;            // object-position 50% 50% (center)
     screenEl.style.left   = (ox + SCR.fx0*rw) + "px";
     screenEl.style.top    = (oy + SCR.fy0*rh) + "px";
     screenEl.style.width  = ((SCR.fx1-SCR.fx0)*rw) + "px";
     screenEl.style.height = ((SCR.fy1-SCR.fy0)*rh) + "px";
-    if(feedEl) feedEl.style.fontSize = Math.max(9, rh*0.0165) + "px";
+    if(feedEl) feedEl.style.fontSize = Math.max(8, rh*0.0165) + "px";
   }
   placeScreen();
   window.addEventListener("resize", placeScreen, { passive:true });
@@ -176,15 +176,22 @@
     }
   }
 
-  /* live clock (Pune / IST) */
-  var clock = $("#clock");
-  if (clock) {
-    var tick = function () {
-      try { clock.textContent = new Date().toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit", hour12: true }) + " IST"; }
-      catch (e) { clock.textContent = new Date().toLocaleTimeString(); }
-    };
-    tick(); setInterval(tick, 20000);
-  }
+  /* live clock + studio status (Chalisgaon, Maharashtra / IST) */
+  var clock = $("#clock"), fstMsg = $("#fstMsg"), fstClock = $("#fstClock"), fstDot = $("#fstDot");
+  var tick = function () {
+    var now = new Date(), time;
+    try { time = now.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit", hour12: true }); }
+    catch (e) { time = now.toLocaleTimeString(); }
+    if (clock) clock.textContent = time + " IST";
+    if (fstClock) fstClock.textContent = time + " IST";
+    if (fstMsg) {
+      var h; try { h = parseInt(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: "2-digit", hour12: false }), 10); } catch (e) { h = now.getHours(); }
+      var open = (h >= 9 && h < 24);
+      fstMsg.textContent = open ? "Studio open — building" : "Studio resting — back at dawn";
+      if (fstDot) fstDot.classList.toggle("off", !open);
+    }
+  };
+  if (clock || fstMsg) { tick(); setInterval(tick, 20000); }
 
   /* Ask-my-work terminal */
   var qa = [
@@ -278,7 +285,7 @@
 
   /* per-project journey (idea → … → live) for the case-study timeline */
   var JOURNEY = {
-    applysync:[["Idea","Job-hunting is spray & pray"],["Research","Jobs live in Telegram channels"],["Prototype","A listener that parses every post"],["Failure","Launched to ~0 paying users"],["Pivot","Doubling down on distribution"],["Live","applysync.in in production"]],
+    applysync:[["Idea","Job-hunting is spray & pray"],["Research","Jobs live in Telegram channels"],["Prototype","A listener that parses every post"],["Launch day","Expected 100 users. Got 0."],["The lesson","Code wasn't the gap — distribution was"],["Live","applysync.in, in production"]],
     facegpt:[["Brief","Reverse image search, mobile-first"],["Build","20+ Flutter screens"],["Billing","Credit & subscription engine"],["Tune","~25% lower sync latency"],["Ship","Live on Google Play"]],
     skingpt:[["Idea","AI meets personal style"],["Build","Selfie → colour analysis"],["Auth","Firebase: email/Google/Apple"],["Ship","Live on the App Store"]],
     iasa:[["Mission","Support cancer patients"],["Guardrail","PHI-safe AI layer first"],["Build","14+ governed AI features"],["Harden","Crisis detection + kill switch"],["Live","iamstillalive.com"]],
@@ -295,11 +302,54 @@
     conference:{t1:"ticket sold · ₹2,400",       t2:"keynote starting",    chip:"live · 312 registered" },
     portal:{    t1:"leave request approved",     t2:"payroll run complete", chip:"team online · 7" }
   };
+
+  /* hover-detail for each architecture node (interactive architecture) */
+  var ARCHX = {
+    applysync:{ "Telegram listener":"GramJS · watches 50+ channels · parses every post · 24/7",
+      "AI fit + tailoring":"OpenAI ⇄ NVIDIA NIM fallback · scores fit · rewrites résumé per ATS",
+      "Auto-apply + Gmail":"sends via the user's own Gmail · queued · rate-limited",
+      "React 19 dashboard":"review · approve · track · Razorpay billing",
+      "Chrome extension":"Manifest V3 · auto-fills 46+ application sites" },
+    iasa:{ "Django + Channels + Celery":"WebSocket chat · async tasks · real-time",
+      "Central governed AI layer":"one audited service · chat · classify · embed · moderate",
+      "Vision · Crisis · Moderation":"reads scans/PDFs · self-harm detection · Llama-Guard",
+      "Embeddings case-matching":"finds similar past cases by meaning",
+      "PHI guardrail + kill switch":"de-identify before any model · global kill switch · 0 raw PHI" },
+    conference:{ "Next.js 15 + Prisma (35 models)":"one owned codebase · ~18,000 lines",
+      "LiveKit rooms + Q&A":"camera preview · DB-backed Q&A with upvoting",
+      "Stripe + waitlist":"paid tickets · capacity caps · auto waitlists",
+      "AI copilot · matchmaker · search":"embeddings matchmaker · semantic library search",
+      "S3 + Resend + Auth":"assets · transactional email · sessions" },
+    portal:{ "Next.js 14 + Prisma":"20+ modules · one internal OS",
+      "PostgreSQL (Supabase)":"managed Postgres · row-level access",
+      "Microsoft Azure AD SSO":"one-click company login · no extra password",
+      "Microsoft Graph email":"system mail via the org's own tenant",
+      "Cloudflare R2":"object storage for docs & assets" },
+    facegpt:{ "Flutter app (20+ screens)":"auth · image upload · async search",
+      "Credit/subscription engine":"daily/weekly/monthly cycles · usage gating",
+      "Firebase + REST":"~25% lower data-sync latency" },
+    skingpt:{ "Skin-tone analysis":"drives colour + outfit recommendations",
+      "Firebase auth":"email · Google · Apple sign-in",
+      "Dio API layer":"analysis requests · error handling · parsing" }
+  };
+
+  /* developer commentary — the "why" behind decisions */
+  var WHY = {
+    applysync:[["Why Telegram, not job boards?","Indian grads live in Telegram job channels — that's where the supply actually is."],["Why a human in the loop?","Auto-applying blindly burns your reputation. A review step protects quality and trust."]],
+    iasa:[["Why de-identify before the model?","A wrong answer here can harm. Stripping PHI before any AI call makes the whole system fail-safe."],["Why a global kill switch?","If the AI misbehaves, one switch halts every feature instantly — safety over uptime."]],
+    conference:[["Why build it in-house?","Vendor quotes hit ₹60L–4Cr. Owning the codebase was cheaper and infinitely more flexible."],["Why one swappable AI layer?","35 models behind one interface meant one-line provider swaps, not a rewrite."]],
+    portal:[["Why Azure AD SSO?","The team already lived in Microsoft — SSO removed a login wall and a security risk."]],
+    facegpt:[["Why a credit engine on day one?","A search product needs metering from the start — billing can't be bolted on later."]],
+    skingpt:[["Why an async result flow?","Selfie → result should feel instant; the heavy work happens behind a clean flow."]]
+  };
   var drawer=$("#drawer"), drScrim=$("#drScrim"), drBody=$("#drBody"), drClose=$("#drClose"), lastFocus=null;
   function openCase(id){
     var d=DET[id], m=META[id]||{}; if(!d||!drawer) return;
     var facts=Object.keys(d.facts).map(function(k){return '<div class="cs-fact"><span>'+esc(k)+'</span><b>'+esc(d.facts[k])+'</b></div>';}).join('');
-    var arch=d.arch.map(function(n,i){var dl=(i*0.35).toFixed(2);return '<span class="node" style="animation-delay:'+dl+'s">'+esc(n)+'</span>'+(i<d.arch.length-1?'<span class="ar" style="animation-delay:'+(i*0.35+0.17).toFixed(2)+'s">→</span>':'');}).join('');
+    var ax=ARCHX[id]||{};
+    var arch=d.arch.map(function(n,i){var dl=(i*0.35).toFixed(2);var tip=ax[n]?'<span class="node-tip">'+esc(ax[n])+'</span>':'';return '<span class="node'+(ax[n]?' has-tip':'')+'" style="animation-delay:'+dl+'s">'+esc(n)+tip+'</span>'+(i<d.arch.length-1?'<span class="ar" style="animation-delay:'+(i*0.35+0.17).toFixed(2)+'s">→</span>':'');}).join('');
+    var why=(WHY[id]||[]).map(function(w,i){return '<details class="cs-why"'+(i===0?' open':'')+'><summary>'+esc(w[0])+'</summary><p>'+esc(w[1])+'</p></details>';}).join('');
+    var whyBlock = why ? '<div class="cs-sec"><div class="l">Decisions — the “why”</div>'+why+'</div>' : '';
     var metrics=d.metrics.map(function(x){return '<div class="cs-metric"><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>';}).join('');
     var top='<div class="cs-top"><div class="cs-cat">'+esc(d.cat)+'</div><h2 class="cs-title" id="drTitle">'+esc(d.title)+'</h2>'+
       '<div class="cs-tag">“'+esc(d.tag)+'”</div><div class="cs-facts">'+facts+'</div>'+
@@ -316,7 +366,7 @@
       d.build.map(function(b,i){return '<li><span class="n">'+(i+1<10?'0':'')+(i+1)+'</span><span>'+esc(b)+'</span></li>';}).join('')+'</ul></div></div>';
     var right='<div><div class="cs-sec"><div class="l">Architecture</div><div class="cs-arch">'+arch+'</div></div>'+
       '<div class="cs-sec"><div class="l">Impact</div><div class="cs-metrics">'+metrics+'</div></div>'+
-      '<div class="cs-sec"><div class="l">Stack</div><div class="cs-stack">'+d.stack.map(function(s){return '<span>'+esc(s)+'</span>';}).join('')+'</div></div></div>';
+      '<div class="cs-sec"><div class="l">Stack</div><div class="cs-stack">'+d.stack.map(function(s){return '<span>'+esc(s)+'</span>';}).join('')+'</div></div>'+whyBlock+'</div>';
     var jr=(JOURNEY[id]||[]).map(function(s,i){return '<div class="ct-step" style="animation-delay:'+(i*0.1).toFixed(2)+'s"><span class="ct-dot"></span><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>';}).join('');
     var timeBlock = jr ? '<div class="cs-journey"><div class="l">The journey</div><div class="ct-row">'+jr+'</div></div>' : '';
     drBody.innerHTML = top + show + '<div class="cs-grid">'+left+right+'</div>' + timeBlock;
@@ -325,7 +375,9 @@
     document.body.style.overflow="hidden"; drBody.scrollTop=0; if(drClose)drClose.focus();
   }
   function closeCase(){ drawer.classList.remove("show"); document.body.style.overflow=""; setTimeout(function(){drawer.classList.remove("open");},reduce?0:520); if(lastFocus)lastFocus.focus(); }
+  window.__closeCase = function(){ if(drawer && drawer.classList.contains("open")) closeCase(); };
   Array.prototype.forEach.call(document.querySelectorAll(".tile[data-proj]"),function(c){ c.addEventListener("click",function(){ openCase(c.getAttribute("data-proj")); }); });
+  Array.prototype.forEach.call(document.querySelectorAll(".ms-cta[data-open]"),function(b){ b.addEventListener("click",function(){ openCase(b.getAttribute("data-open")); }); });
   if(drScrim) drScrim.addEventListener("click",closeCase);
   if(drClose) drClose.addEventListener("click",closeCase);
   document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&drawer&&drawer.classList.contains("open")) closeCase(); });
@@ -346,22 +398,24 @@
   var dot = $("#curDot"), ring = $("#curRing");
   if (finePointer && !reduce && dot && ring) {
     if (!$("#splash")) document.body.classList.add("cur-on"); /* else splash hands over on entry */
-    var mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my, magnet = null;
+    var mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my, magnet = null, curRun = false, lastMove = 0;
+    function kick(){ lastMove = Date.now(); if (!curRun) { curRun = true; loop(); } }
     document.addEventListener("mousemove", function (e) {
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx + "px"; dot.style.top = my + "px";
+      kick();
     }, { passive: true });
     var HOT = "a, button, .tile, .t-chip, .cs-cta, .scrollcue, .kbd-chip, .help-item, h1, h2";
     document.addEventListener("mouseover", function (e) {
       var t = e.target.closest(HOT);
-      if (t) { ring.classList.add("hot"); magnet = t; }
+      if (t) { ring.classList.add("hot"); magnet = t; kick(); }
     });
     document.addEventListener("mouseout", function (e) {
       if (e.target.closest(HOT)) { ring.classList.remove("hot"); magnet = null; }
     });
     document.addEventListener("mouseleave", function () { dot.classList.add("hide"); ring.classList.add("hide"); });
     document.addEventListener("mouseenter", function () { dot.classList.remove("hide"); ring.classList.remove("hide"); });
-    (function loop(){
+    function loop(){
       var tx = mx, ty = my;
       if (magnet) {                                  // gently magnetize toward the target's centre
         var r = magnet.getBoundingClientRect();
@@ -369,10 +423,12 @@
         var bias = (r.width > 320) ? 0.16 : 0.42;    // softer pull for big headings
         tx = mx + (cx - mx) * bias; ty = my + (cy - my) * bias;
       }
-      rx += (tx - rx) * 0.2; ry += (ty - ry) * 0.2;
+      rx += (tx - rx) * 0.3; ry += (ty - ry) * 0.3;
       ring.style.left = rx + "px"; ring.style.top = ry + "px";
+      if (Date.now() - lastMove > 700 && !magnet && Math.abs(tx - rx) < 0.5 && Math.abs(ty - ry) < 0.5) { curRun = false; return; }  // idle-pause
       requestAnimationFrame(loop);
-    })();
+    }
+    kick();
 
     /* physical magnetic pull on key buttons (not tiles/headings — they have their own transforms) */
     Array.prototype.forEach.call(document.querySelectorAll(".cta, .kbd-chip, .sp-enter, .t-actbtn"), function (el) {

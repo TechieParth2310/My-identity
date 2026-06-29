@@ -40,9 +40,18 @@
       var k = (e.key || "").toLowerCase();
       if (k.length === 1 && k >= "a" && k <= "z") {
         buf = (buf + k).slice(-14);
+        var hit = false;
+        for (var a in ACTIONS) { if (buf.indexOf(a) !== -1) { ACTIONS[a](); buf = ""; hit = true; break; } }
+        if (hit) return;
         for (var w in WORDS) { if (buf.indexOf(w) !== -1) { toast(WORDS[w]); buf = ""; break; } }
       }
     });
+
+    var ACTIONS = {
+      build: function () { toast("▸ entering build mode…"); setTimeout(function () { if (window.__buildMode) window.__buildMode(); }, 600); },
+      coffee: function () { document.body.classList.add("lamp-on"); toast("the lamp clicks on. back to building."); setTimeout(function () { document.body.classList.remove("lamp-on"); }, 4500); },
+      sudoship: function () { toast("$ sudo ship — deploying…"); setTimeout(function () { toast("✓ shipped to production."); }, 1500); }
+    };
 
     var brand = document.querySelector(".brand");
     if (brand) brand.addEventListener("dblclick", function (e) {

@@ -23,8 +23,8 @@
     var cam = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
     cam.position.z = 16;
     var lowPow = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4);
-    var renderer = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowPow ? 1.5 : 2));
+    var renderer = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: !lowPow });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); /* cap density — big perf win */
 
     // soft round sprite
     var sc = document.createElement("canvas"); sc.width = sc.height = 64;
@@ -36,7 +36,7 @@
     sx.fillStyle = sg; sx.fillRect(0, 0, 64, 64);
     var tex = new THREE.Texture(sc); tex.needsUpdate = true;
 
-    var N = lowPow ? 700 : 1500;
+    var N = lowPow ? 450 : 900;
     var geo = new THREE.BufferGeometry();
     var pos = new Float32Array(N * 3), spd = new Float32Array(N);
     for (var i = 0; i < N; i++) {
@@ -53,7 +53,7 @@
     var pts = new THREE.Points(geo, mat); scene.add(pts);
 
     // depth layer — fewer, larger, softer, slower (parallax depth)
-    var N2 = lowPow ? 55 : 130;
+    var N2 = lowPow ? 35 : 75;
     var geo2 = new THREE.BufferGeometry();
     var pos2 = new Float32Array(N2 * 3), spd2 = new Float32Array(N2);
     for (var b = 0; b < N2; b++) { pos2[b*3]=(Math.random()-0.5)*54; pos2[b*3+1]=(Math.random()-0.5)*32; pos2[b*3+2]=(Math.random()-0.5)*22; spd2[b]=Math.random()*0.22+0.04; }
@@ -149,11 +149,11 @@
       { k: ["facegpt", "face gpt", "reverse image"], a: "FaceGPT — an AI reverse-image-search app on Google Play. 20+ screens, plus a backend-driven credit & subscription engine kept perfectly in sync. Cut data-sync latency ~25%." },
       { k: ["skingpt", "skin", "style", "fashion"], a: "SkinGPT — a cross-platform app on the App Store: upload a selfie, get personalised colour and outfit recommendations from skin-tone analysis. Firebase auth, Dio API layer." },
       { k: ["hire", "why you", "work with", "recruit", "stand out"], a: "Because I ship. Real products, real users, real impact — fast. I own outcomes end to end and optimise for leverage. If you need someone who turns ambition into a live product, that's the whole job." },
-      { k: ["contact", "email", "reach", "talk", "connect", "get in touch"], a: "Easiest: parthkothawade2310@gmail.com — or hit ⌘K → Copy email. I'm in Pune, available for meaningful work." },
+      { k: ["contact", "email", "reach", "talk", "connect", "get in touch"], a: "Easiest: parthkothawade2310@gmail.com — or hit ⌘K → Copy email. I'm in Chalisgaon, Maharashtra, available for meaningful work." },
       { k: ["strength", "good at", "best", "superpower"], a: "Vision, system design, orchestration and shipping. I see what to build, design the architecture, direct AI to build it, and get it to production." },
       { k: ["weak", "improve", "growing", "learn"], a: "I'm honest about it: deepening CS fundamentals, distribution/marketing, and business English. I treat them as the next things to ship — myself included." },
       { k: ["education", "college", "degree", "study", "graduate"], a: "B.Tech in Electronics & Communication, graduated 2026. But the real curriculum was shipping products people actually use." },
-      { k: ["who", "about", "yourself", "introduce"], a: "I'm Parth Kothawade — an AI product engineer from Pune. I don't prompt models; I build the systems around them and ship products that matter." }
+      { k: ["who", "about", "yourself", "introduce"], a: "I'm Parth Kothawade — an AI product engineer from Chalisgaon, Maharashtra. I don't prompt models; I build the systems around them and ship products that matter." }
     ];
     var DEFAULT = "Good question — I answer best on my work. Try asking about ApplySync, I Am Still Alive, the conference platform, how I decide what to build, or how fast I ship. (Or hit ⌘K.)";
 
@@ -233,6 +233,7 @@
 
     function go(id) {
       var el = $(id); if (!el) return;
+      if (window.__closeCase) window.__closeCase();   // never navigate while a case drawer covers the page
       var key = id.replace("#", "");
       if (window.__room) window.__room(key, function () { el.scrollIntoView({ behavior: "auto" }); });
       else el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
@@ -251,8 +252,13 @@
       { t: "Go to The Method", ic: "▤", run: function () { go("#method"); } },
       { t: "Go to How I think", ic: "▤", run: function () { go("#brain"); } },
       { t: "Go to The Builder", ic: "▤", run: function () { go("#builder"); } },
+      { t: "Go to Field Notes", ic: "▤", run: function () { go("#notes"); } },
       { t: "Go to About", ic: "▤", run: function () { go("#about"); } },
-      { t: "Start a Project — Contact", ic: "✦", run: function () { go("#contact"); } },
+      { t: "Go to The Journey", ic: "▤", run: function () { go("#journey"); } },
+      { t: "Go to The Missions", ic: "▤", run: function () { go("#missions"); } },
+      { t: "Go to The Stack", ic: "▤", run: function () { go("#skills"); } },
+      { t: "Go to The Record", ic: "▤", run: function () { go("#record"); } },
+      { t: "Start a Project — Contact", ic: "✦", run: function () { if (window.__contact) window.__contact(); else go("#contact"); } },
       { t: "Open case · ApplySync", ic: "↗", run: function () { openCaseById("applysync"); } },
       { t: "Open case · FaceGPT", ic: "↗", run: function () { openCaseById("facegpt"); } },
       { t: "Open case · SkinGPT", ic: "↗", run: function () { openCaseById("skingpt"); } },
@@ -264,6 +270,7 @@
       { t: "Open GitHub", ic: "⌥", run: function () { window.open("https://github.com/TechieParth2310", "_blank", "noopener"); } },
       { t: "Toggle sound", ic: "♪", run: function () { if (SND) SND.toggle(); } },
       { t: "Developer mode (live GitHub)", ic: "⌘", run: function () { if (window.__toggleDev) window.__toggleDev(); }, k: "~" },
+      { t: "Toggle Builder Mode (engineering dossier)", ic: "▦", run: function () { if (window.__builder) window.__builder.toggle(); } },
       { t: "Watch ApplySync being built", ic: "▶", run: function () { if (window.__replay) window.__replay("applysync"); } },
       { t: "Watch I Am Still Alive being built", ic: "▶", run: function () { if (window.__replay) window.__replay("iasa"); } },
       { t: "Watch me build this site", ic: "▶", run: function () { if (window.__buildMode) window.__buildMode(); } },
@@ -403,7 +410,8 @@
   safe(function () {
     if (reduce || !("IntersectionObserver" in window)) return;
     var sels = [".band .sec-head", ".work-grid .tile", ".manifesto .man-quote",
-               ".method-grid", ".brain-card", ".builder-step", ".about-grid", ".about-values", ".foot-top"];
+               ".method-grid", ".bf-step", ".builder-step", ".about-grid", ".about-story",
+               ".jr-step", ".mission", ".skill-col", ".rec-block", ".foot-top"];
     var els = [];
     sels.forEach(function (s) { $$(s).forEach(function (e) { els.push(e); }); });
     if (!els.length) return;
