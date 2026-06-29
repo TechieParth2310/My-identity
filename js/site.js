@@ -13,10 +13,10 @@
     if (!splash) return;
     var spBg = $("#spBg"), spLoad = $("#spLoad"), spStatus = $("#spStatus"),
         spEnter = $("#spEnter"), spEmbers = $("#spEmbers");
-    var POOL = 5, dismissed = false, raf = null;
+    var dismissed = false, raf = null;
 
-    /* random AI backdrop — feels freshly generated each visit */
-    var pick = 1 + Math.floor(Math.random() * POOL);
+    /* the particle ring is the signature splash — always use it */
+    var pick = 3;
     if (spBg) { var im = new Image(); im.onload = function(){ spBg.style.backgroundImage = "url('assets/splash-"+pick+".jpg')"; }; im.src = "assets/splash-"+pick+".jpg"; }
 
     /* ember / spark canvas */
@@ -275,6 +275,26 @@
     conference:{ type:"site", img:"assets/Conference%20module.png", domain:"iasa-events-module.vercel.app", live:{url:"https://i-asa-events-module-ylys.vercel.app/",label:"Open the live demo"} },
     portal:{ type:"site", img:"assets/Management%20portal.png", domain:"portal.iamstillalive.com", live:{url:"https://portal.iamstillalive.com/",label:"Visit the portal"} }
   };
+
+  /* per-project journey (idea → … → live) for the case-study timeline */
+  var JOURNEY = {
+    applysync:[["Idea","Job-hunting is spray & pray"],["Research","Jobs live in Telegram channels"],["Prototype","A listener that parses every post"],["Failure","Launched to ~0 paying users"],["Pivot","Doubling down on distribution"],["Live","applysync.in in production"]],
+    facegpt:[["Brief","Reverse image search, mobile-first"],["Build","20+ Flutter screens"],["Billing","Credit & subscription engine"],["Tune","~25% lower sync latency"],["Ship","Live on Google Play"]],
+    skingpt:[["Idea","AI meets personal style"],["Build","Selfie → colour analysis"],["Auth","Firebase: email/Google/Apple"],["Ship","Live on the App Store"]],
+    iasa:[["Mission","Support cancer patients"],["Guardrail","PHI-safe AI layer first"],["Build","14+ governed AI features"],["Harden","Crisis detection + kill switch"],["Live","iamstillalive.com"]],
+    conference:[["Quote","Vendors: ₹60L–4Cr"],["Decision","Build it in-house"],["Build","18k lines · 35 models"],["AI","Copilot + matchmaker"],["Live","In production"]],
+    portal:[["Need","No internal OS existed"],["Build","20+ modules"],["SSO","Microsoft Azure AD"],["Adopt","Whole team, daily"],["Live","portal.iamstillalive.com"]]
+  };
+
+  /* "living product" overlay copy — makes each real screenshot feel like a running product */
+  var LIVE = {
+    applysync:{ t1:"Applied · Software Engineer", t2:"3 new role matches", chip:"applying · 24/7" },
+    facegpt:{   t1:"match found · 97%",          t2:"search complete",     chip:"live · Google Play" },
+    skingpt:{   t1:"palette ready",              t2:"3 outfits suggested", chip:"live · App Store" },
+    iasa:{      t1:"crisis check · clear",       t2:"similar case matched", chip:"governed · live" },
+    conference:{t1:"ticket sold · ₹2,400",       t2:"keynote starting",    chip:"live · 312 registered" },
+    portal:{    t1:"leave request approved",     t2:"payroll run complete", chip:"team online · 7" }
+  };
   var drawer=$("#drawer"), drScrim=$("#drScrim"), drBody=$("#drBody"), drClose=$("#drClose"), lastFocus=null;
   function openCase(id){
     var d=DET[id], m=META[id]||{}; if(!d||!drawer) return;
@@ -283,12 +303,13 @@
     var metrics=d.metrics.map(function(x){return '<div class="cs-metric"><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>';}).join('');
     var top='<div class="cs-top"><div class="cs-cat">'+esc(d.cat)+'</div><h2 class="cs-title" id="drTitle">'+esc(d.title)+'</h2>'+
       '<div class="cs-tag">“'+esc(d.tag)+'”</div><div class="cs-facts">'+facts+'</div>'+
-      (m.live?'<a class="cs-cta" href="'+m.live.url+'" target="_blank" rel="noopener">'+esc(m.live.label)+' →</a>':'')+'</div>';
-    var show='';
+      (m.live?'<a class="cs-cta" href="'+m.live.url+'" target="_blank" rel="noopener">'+esc(m.live.label)+' →</a>':'')+
+      ((id==='applysync'||id==='iasa')?'<button class="cs-replay" type="button" data-replay="'+id+'">▶ Watch how it was built</button>':'')+'</div>';
+    var show='', lv=LIVE[id];
     if(m.img && m.type==='app'){
-      show='<div class="cs-show app"><div class="frame phone-lg"><span class="pn"></span><img src="'+m.img+'" alt="'+esc(d.title)+'"></div></div>';
+      show='<div class="cs-show app"><div class="frame phone-lg"><span class="pn"></span><span class="fr-live">● live</span><span class="fr-sheen"></span><img src="'+m.img+'" alt="'+esc(d.title)+'">'+(lv?'<div class="lv lv-app"><div class="lv-chip">'+esc(lv.chip)+'</div></div>':'')+'</div></div>';
     } else if(m.img){
-      show='<div class="cs-show"><div class="frame browser"><div class="fr-bar"><i></i><i></i><i></i><span class="fr-url">'+esc(m.domain||'')+'</span></div><div class="fr-shot"><img src="'+m.img+'" alt="'+esc(d.title)+'"></div></div></div>';
+      show='<div class="cs-show"><div class="frame browser"><div class="fr-bar"><i></i><i></i><i></i><span class="fr-url">'+esc(m.domain||'')+'</span></div><div class="fr-shot"><img src="'+m.img+'" alt="'+esc(d.title)+'"><span class="fr-sheen"></span><span class="fr-live">● live</span>'+(lv?'<div class="lv"><div class="lv-toast lv-t1">'+esc(lv.t1)+'</div><div class="lv-toast lv-t2">'+esc(lv.t2)+'</div><div class="lv-chip">'+esc(lv.chip)+'</div></div>':'')+'</div></div></div>';
     }
     var left='<div><div class="cs-sec"><div class="l">Overview</div><p class="cs-lead">'+esc(d.overview)+'</p></div>'+
       '<div class="cs-sec"><div class="l">What I built</div><ul class="cs-list">'+
@@ -296,7 +317,9 @@
     var right='<div><div class="cs-sec"><div class="l">Architecture</div><div class="cs-arch">'+arch+'</div></div>'+
       '<div class="cs-sec"><div class="l">Impact</div><div class="cs-metrics">'+metrics+'</div></div>'+
       '<div class="cs-sec"><div class="l">Stack</div><div class="cs-stack">'+d.stack.map(function(s){return '<span>'+esc(s)+'</span>';}).join('')+'</div></div></div>';
-    drBody.innerHTML = top + show + '<div class="cs-grid">'+left+right+'</div>';
+    var jr=(JOURNEY[id]||[]).map(function(s,i){return '<div class="ct-step" style="animation-delay:'+(i*0.1).toFixed(2)+'s"><span class="ct-dot"></span><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>';}).join('');
+    var timeBlock = jr ? '<div class="cs-journey"><div class="l">The journey</div><div class="ct-row">'+jr+'</div></div>' : '';
+    drBody.innerHTML = top + show + '<div class="cs-grid">'+left+right+'</div>' + timeBlock;
     lastFocus=document.activeElement;
     drawer.classList.add("open"); requestAnimationFrame(function(){drawer.classList.add("show");});
     document.body.style.overflow="hidden"; drBody.scrollTop=0; if(drClose)drClose.focus();
@@ -323,28 +346,36 @@
   var dot = $("#curDot"), ring = $("#curRing");
   if (finePointer && !reduce && dot && ring) {
     if (!$("#splash")) document.body.classList.add("cur-on"); /* else splash hands over on entry */
-    var mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+    var mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my, magnet = null;
     document.addEventListener("mousemove", function (e) {
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx + "px"; dot.style.top = my + "px";
     }, { passive: true });
-    (function loop(){
-      rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
-      ring.style.left = rx + "px"; ring.style.top = ry + "px";
-      requestAnimationFrame(loop);
-    })();
-    var HOT = "a, button, .tile, .t-chip, .cs-cta, .scrollcue";
+    var HOT = "a, button, .tile, .t-chip, .cs-cta, .scrollcue, .kbd-chip, .help-item, h1, h2";
     document.addEventListener("mouseover", function (e) {
-      if (e.target.closest(HOT)) ring.classList.add("hot");
+      var t = e.target.closest(HOT);
+      if (t) { ring.classList.add("hot"); magnet = t; }
     });
     document.addEventListener("mouseout", function (e) {
-      if (e.target.closest(HOT)) ring.classList.remove("hot");
+      if (e.target.closest(HOT)) { ring.classList.remove("hot"); magnet = null; }
     });
     document.addEventListener("mouseleave", function () { dot.classList.add("hide"); ring.classList.add("hide"); });
     document.addEventListener("mouseenter", function () { dot.classList.remove("hide"); ring.classList.remove("hide"); });
+    (function loop(){
+      var tx = mx, ty = my;
+      if (magnet) {                                  // gently magnetize toward the target's centre
+        var r = magnet.getBoundingClientRect();
+        var cx = r.left + r.width/2, cy = r.top + r.height/2;
+        var bias = (r.width > 320) ? 0.16 : 0.42;    // softer pull for big headings
+        tx = mx + (cx - mx) * bias; ty = my + (cy - my) * bias;
+      }
+      rx += (tx - rx) * 0.2; ry += (ty - ry) * 0.2;
+      ring.style.left = rx + "px"; ring.style.top = ry + "px";
+      requestAnimationFrame(loop);
+    })();
 
-    /* magnetic pull on key CTAs */
-    Array.prototype.forEach.call(document.querySelectorAll(".cta"), function (el) {
+    /* physical magnetic pull on key buttons (not tiles/headings — they have their own transforms) */
+    Array.prototype.forEach.call(document.querySelectorAll(".cta, .kbd-chip, .sp-enter, .t-actbtn"), function (el) {
       el.addEventListener("mousemove", function (e) {
         var r = el.getBoundingClientRect();
         var dx = e.clientX - (r.left + r.width/2), dy = e.clientY - (r.top + r.height/2);

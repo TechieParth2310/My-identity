@@ -11,6 +11,17 @@
     var ctx = cv.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var W = 0, H = 0, parts = [], mx = 0, my = 0, tmx = 0, tmy = 0, running = true;
+    var lowPow = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+
+    /* pre-rendered dust sprite (drawn once) — avoids per-frame gradient allocation */
+    var sprite = document.createElement("canvas"); sprite.width = sprite.height = 48;
+    (function () {
+      var sx = sprite.getContext("2d"), g = sx.createRadialGradient(24, 24, 0, 24, 24, 24);
+      g.addColorStop(0, "rgba(255,216,158,1)");
+      g.addColorStop(0.4, "rgba(199,146,79,.6)");
+      g.addColorStop(1, "rgba(199,146,79,0)");
+      sx.fillStyle = g; sx.fillRect(0, 0, 48, 48);
+    })();
 
     function size() {
       W = window.innerWidth; H = window.innerHeight;
@@ -29,7 +40,8 @@
     }
     function seed() {
       parts = [];
-      var n = Math.max(26, Math.min(70, Math.round(W / 26)));   // density scales with width
+      var cap = lowPow ? 36 : 70;
+      var n = Math.max(22, Math.min(cap, Math.round(W / 26)));   // density scales with width / power
       for (var i = 0; i < n; i++) parts.push(mk());
     }
     function frame() {
@@ -43,13 +55,10 @@
         var px = p.x + mx * 26 * p.z, py = p.y + my * 18 * p.z;   // mouse parallax by depth
         var fl = 0.65 + 0.35 * Math.sin(p.tw);
         var R = p.r * 5;
-        var g = ctx.createRadialGradient(px, py, 0, px, py, R);
-        g.addColorStop(0, "rgba(255,216,158," + (p.a * fl).toFixed(3) + ")");
-        g.addColorStop(0.4, "rgba(199,146,79," + (p.a * fl * 0.6).toFixed(3) + ")");
-        g.addColorStop(1, "rgba(199,146,79,0)");
-        ctx.fillStyle = g;
-        ctx.beginPath(); ctx.arc(px, py, R, 0, 6.2832); ctx.fill();
+        ctx.globalAlpha = p.a * fl;
+        ctx.drawImage(sprite, px - R, py - R, R * 2, R * 2);       // cached sprite — no per-frame gradient
       }
+      ctx.globalAlpha = 1;
       requestAnimationFrame(frame);
     }
     window.addEventListener("mousemove", function (e) {

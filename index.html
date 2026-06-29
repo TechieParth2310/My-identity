@@ -35,7 +35,7 @@
   </div>
 
   <!-- LIVING ATMOSPHERE (site-wide, behind content) -->
-  <div class="atmos" id="atmos" aria-hidden="true"><div class="atmos-plate"></div><canvas id="atmosCanvas"></canvas></div>
+  <div class="atmos" id="atmos" aria-hidden="true"><div class="ap-rays"></div><div class="atmos-plate"></div><div class="ap-smoke"></div><canvas id="atmosCanvas"></canvas></div>
 
   <div class="progress" id="progress"></div>
   <div class="cur-ring" id="curRing"></div>
@@ -48,6 +48,7 @@
       <a href="#work">The Work</a>
       <a href="#method">The Method</a>
       <a href="#about">About</a>
+      <button class="kbd-chip" id="kChip" type="button" aria-label="Open command menu"><span>⌘</span>K</button>
       <a class="cta" href="#contact">Start a Project<i></i></a>
     </nav>
   </header>
@@ -60,23 +61,25 @@
         <canvas class="hero-gl" id="heroGL" aria-hidden="true"></canvas>
         <div class="hero-screen" id="heroScreen" aria-hidden="true">
           <div class="scr-feed" id="screenFeed"></div>
+          <span class="scr-live">● live</span>
+          <div class="scr-reflect"></div>
           <div class="scr-glass"></div>
         </div>
       </div>
     </div>
     <div class="hero-scrim"></div>
+    <div class="hero-glow"></div>
     <div class="hero-inner">
       <p class="eyebrow a1">AI Product Engineer</p>
       <h1 class="h-title">
         <span class="a2">I build AI&nbsp;products</span><br>
-        <span class="a3">that people</span><br>
-        <span class="a3"><em>actually&nbsp;use.</em></span>
+        <span class="a3">people <em>rely&nbsp;on.</em></span>
       </h1>
-      <p class="h-sub a4">I don't prompt models. I design the systems around them, make the architectural calls, and ship products that create real impact — in days, not months.</p>
+      <p class="h-sub a4">Most AI demos impress.<br>Production systems survive.<br>I build the second.</p>
       <div class="h-stats a5">
-        <div class="st"><b>00</b><span>Days<br>not months</span></div>
-        <div class="st"><b>00+</b><span>Products<br>shipped</span></div>
-        <div class="st"><b>₹00L+</b><span>Cost replaced<br>for clients</span></div>
+        <div class="st"><b>6</b><span>Products<br>people use</span></div>
+        <div class="st"><b>₹4Cr</b><span>Vendor cost<br>replaced</span></div>
+        <div class="st"><b>Days</b><span>idea →<br>production</span></div>
       </div>
       <div class="h-now a6"><span class="dot"></span>Now showing — <b>ApplySync</b> · live in production</div>
     </div>
@@ -150,6 +153,44 @@
     </div>
   </section>
 
+  <!-- MY BRAIN -->
+  <section class="band" id="brain">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">— How I think</div>
+        <h2 class="sec-title">Most engineers show code.<br>Here's the part that actually matters.</h2>
+        <p class="sec-lead">Tools change every six months. Judgment compounds. This is the loop I run on every product.</p>
+      </div>
+      <div class="brain-grid">
+        <div class="brain-card"><span class="bc-n">01</span><b>Problem</b><p>Start from what hurts and who feels it — never from the model.</p></div>
+        <div class="brain-card"><span class="bc-n">02</span><b>Judgment</b><p>Is AI even the right tool here? Most ideas die at this question.</p></div>
+        <div class="brain-card"><span class="bc-n">03</span><b>Architecture</b><p>Design the system around the model: boundaries, fallbacks, guardrails.</p></div>
+        <div class="brain-card"><span class="bc-n">04</span><b>Trade-offs</b><p>Decide what to make swappable and what to harden. Buy future speed now.</p></div>
+        <div class="brain-card"><span class="bc-n">05</span><b>Ship</b><p>Direct AI for the volume; own the calls. Days, not months.</p></div>
+        <div class="brain-card"><span class="bc-n">06</span><b>Review</b><p>Watch real usage. Keep what earns its place; cut the rest.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE BUILDER -->
+  <section class="band builder" id="builder">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">— The Builder</div>
+        <h2 class="sec-title">What it actually takes.</h2>
+        <p class="sec-lead">One night, shipping a fix the team needed by morning.</p>
+      </div>
+      <div class="builder-line">
+        <div class="builder-step"><span class="bt-img" style="background-image:url('assets/builder-1.jpg')"></span><div class="bt-txt"><span class="bt">11:48 PM</span><p>Production bug. A few users locked out.</p></div></div>
+        <div class="builder-step"><span class="bt-img" style="background-image:url('assets/builder-2.jpg')"></span><div class="bt-txt"><span class="bt">1:12 AM</span><p>Traced it to a race condition in the sync layer.</p></div></div>
+        <div class="builder-step"><span class="bt-img" style="background-image:url('assets/builder-3.jpg')"></span><div class="bt-txt"><span class="bt">2:14 AM</span><p>Redesigned how state reconciles — cleaner, safer.</p></div></div>
+        <div class="builder-step"><span class="bt-img" style="background-image:url('assets/builder-4.jpg')"></span><div class="bt-txt"><span class="bt">4:30 AM</span><p>Tests green. Edge cases covered.</p></div></div>
+        <div class="builder-step"><span class="bt-img" style="background-image:url('assets/builder-5.jpg')"></span><div class="bt-txt"><span class="bt">5:41 AM</span><p>Deploy complete. Logs quiet.</p></div></div>
+        <div class="builder-step"><span class="bt-img" style="background-image:url('assets/builder-6.jpg')"></span><div class="bt-txt"><span class="bt">9:02 AM</span><p>The team logs in. It just works. Nobody knows.</p></div></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ABOUT -->
   <section class="band about" id="about">
     <div class="wrap about-grid">
@@ -181,6 +222,7 @@
           <div class="fs"><span>Time</span><b id="clock">—</b></div>
           <div class="fs"><span>Status</span><b class="ok">Available for meaningful work<i></i></b></div>
           <div class="fs"><span>Connect</span><b><a href="https://github.com/TechieParth2310" target="_blank" rel="noopener">GitHub</a> · <a href="mailto:parthkothawade2310@gmail.com">Email</a></b></div>
+          <div class="fs"><span>Activity</span><b id="ghLive" class="gh-live">loading…</b></div>
         </div>
       </div>
       <div class="foot-bottom"><span>© 2026 Parth Kothawade</span><span>Built with obsession. Shipped with impact.</span></div>
@@ -212,5 +254,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/next.js"></script>
   <script src="js/atmos.js"></script>
+  <script src="js/devmode.js"></script>
+  <script src="js/replay.js"></script>
+  <script src="js/buildmode.js"></script>
+  <script src="js/rooms.js"></script>
+  <script src="js/metrics.js"></script>
+  <script src="js/eggs.js"></script>
+  <script src="js/hints.js"></script>
 </body>
 </html>

@@ -22,8 +22,9 @@
     var scene = new THREE.Scene();
     var cam = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
     cam.position.z = 16;
+    var lowPow = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4);
     var renderer = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowPow ? 1.5 : 2));
 
     // soft round sprite
     var sc = document.createElement("canvas"); sc.width = sc.height = 64;
@@ -35,7 +36,7 @@
     sx.fillStyle = sg; sx.fillRect(0, 0, 64, 64);
     var tex = new THREE.Texture(sc); tex.needsUpdate = true;
 
-    var N = 1500;
+    var N = lowPow ? 700 : 1500;
     var geo = new THREE.BufferGeometry();
     var pos = new Float32Array(N * 3), spd = new Float32Array(N);
     for (var i = 0; i < N; i++) {
@@ -51,6 +52,16 @@
     });
     var pts = new THREE.Points(geo, mat); scene.add(pts);
 
+    // depth layer — fewer, larger, softer, slower (parallax depth)
+    var N2 = lowPow ? 55 : 130;
+    var geo2 = new THREE.BufferGeometry();
+    var pos2 = new Float32Array(N2 * 3), spd2 = new Float32Array(N2);
+    for (var b = 0; b < N2; b++) { pos2[b*3]=(Math.random()-0.5)*54; pos2[b*3+1]=(Math.random()-0.5)*32; pos2[b*3+2]=(Math.random()-0.5)*22; spd2[b]=Math.random()*0.22+0.04; }
+    geo2.setAttribute("position", new THREE.BufferAttribute(pos2, 3));
+    var mat2 = new THREE.PointsMaterial({ size: 1.6, map: tex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: 0xC7924F, opacity: 0.38 });
+    var pts2 = new THREE.Points(geo2, mat2); scene.add(pts2);
+    var arr2 = geo2.attributes.position.array;
+
     var tmx = 0, tmy = 0, mx = 0, my = 0;
     window.addEventListener("mousemove", function (e) {
       tmx = e.clientX / window.innerWidth - 0.5;
@@ -65,6 +76,11 @@
 
     var arr = geo.attributes.position.array, running = true;
     document.addEventListener("visibilitychange", function () { running = !document.hidden; if (running) loop(); });
+    /* pause the GPU loop when the hero is scrolled out of view */
+    var heroEl = document.querySelector(".hero");
+    if (heroEl && "IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) { var vis = es[0].isIntersecting && !document.hidden; if (vis && !running) { running = true; loop(); } else if (!es[0].isIntersecting) { running = false; } }, { threshold: 0 }).observe(heroEl);
+    }
     function loop() {
       if (!running) return;
       mx += (tmx - mx) * 0.05; my += (tmy - my) * 0.05;
@@ -74,6 +90,9 @@
       }
       geo.attributes.position.needsUpdate = true;
       pts.rotation.y = mx * 0.5; pts.rotation.x = my * 0.35;
+      for (var dd = 0; dd < N2; dd++) { arr2[dd*3+1] += spd2[dd]*0.012; if (arr2[dd*3+1] > 16) arr2[dd*3+1] = -16; }
+      geo2.attributes.position.needsUpdate = true;
+      pts2.rotation.y = mx * 0.3; pts2.rotation.x = my * 0.2;
       cam.position.x += (mx * 5 - cam.position.x) * 0.04;
       cam.position.y += (-my * 3.5 - cam.position.y) * 0.04;
       cam.lookAt(0, 0, 0);
@@ -90,6 +109,31 @@
     var tA = $("#tA"), tQ = $("#tQ"), tChips = $("#tChips"),
         form = $("#tForm"), input = $("#tInput");
     if (!tA || !tQ) return;
+
+    /* contextual "show me" action — the AI offers to visually draw/replay the project */
+    var tAct = document.createElement("div"); tAct.className = "t-act";
+    if (tA.parentNode) tA.parentNode.appendChild(tAct);
+    var PROJ = {
+      applysync: ["applysync", "apply sync"], iasa: ["still alive", "iasa", "cancer", "healthcare"],
+      conference: ["conference", "event"], portal: ["portal", "management"],
+      facegpt: ["facegpt", "face gpt", "reverse image"], skingpt: ["skingpt", "skin", "style"]
+    };
+    function detectProj(q) { var s = (q || "").toLowerCase(); for (var p in PROJ) { for (var i = 0; i < PROJ[p].length; i++) if (s.indexOf(PROJ[p][i]) !== -1) return p; } return null; }
+    function showAction(q) {
+      if (!tAct) return; tAct.innerHTML = "";
+      var p = detectProj(q); if (!p) return;
+      setTimeout(function () {
+        var b = document.createElement("button"); b.type = "button"; b.className = "t-actbtn";
+        if (p === "applysync" || p === "iasa") {
+          b.textContent = "▶ watch how I built it";
+          b.addEventListener("click", function () { if (window.__replay) window.__replay(p); });
+        } else {
+          b.textContent = "open the case study →";
+          b.addEventListener("click", function () { var t = document.querySelector('.tile[data-proj="' + p + '"]'); if (t) t.click(); });
+        }
+        tAct.appendChild(b);
+      }, reduce ? 0 : 900);
+    }
 
     var KB = [
       { k: ["decide", "what to build", "idea", "choose", "prioriti", "what should"], a: "I start from the problem, not the model. What hurts, who feels it, and is AI actually the right tool? Most ideas die at that question — and that's the point. I only build what earns a place in production." },
@@ -138,6 +182,7 @@
       tQ.innerHTML = "&gt; " + String(q).replace(/</g, "&lt;");
       if (typer) clearInterval(typer);
       tA.textContent = "Thinking…";
+      showAction(q);
       var local = findAnswer(q), done = false;
       var fb = setTimeout(function () { if (!done) { done = true; typeOut(local); } }, 7000);
       try {
@@ -186,7 +231,12 @@
     var pal = $("#cmdk"), box = $("#cmdkIn"), list = $("#cmdkList");
     if (!pal || !box || !list) return;
 
-    function go(id) { var el = $(id); if (el) el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); }
+    function go(id) {
+      var el = $(id); if (!el) return;
+      var key = id.replace("#", "");
+      if (window.__room) window.__room(key, function () { el.scrollIntoView({ behavior: "auto" }); });
+      else el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    }
     function openCaseById(p) { var t = $('.tile[data-proj="' + p + '"]'); if (t) t.click(); }
     function copyEmail() {
       var em = "parthkothawade2310@gmail.com";
@@ -199,6 +249,8 @@
     var CMDS = [
       { t: "Go to The Work", ic: "▤", run: function () { go("#work"); } },
       { t: "Go to The Method", ic: "▤", run: function () { go("#method"); } },
+      { t: "Go to How I think", ic: "▤", run: function () { go("#brain"); } },
+      { t: "Go to The Builder", ic: "▤", run: function () { go("#builder"); } },
       { t: "Go to About", ic: "▤", run: function () { go("#about"); } },
       { t: "Start a Project — Contact", ic: "✦", run: function () { go("#contact"); } },
       { t: "Open case · ApplySync", ic: "↗", run: function () { openCaseById("applysync"); } },
@@ -211,6 +263,10 @@
       { t: "Email me", ic: "✉", run: function () { window.location.href = "mailto:parthkothawade2310@gmail.com"; } },
       { t: "Open GitHub", ic: "⌥", run: function () { window.open("https://github.com/TechieParth2310", "_blank", "noopener"); } },
       { t: "Toggle sound", ic: "♪", run: function () { if (SND) SND.toggle(); } },
+      { t: "Developer mode (live GitHub)", ic: "⌘", run: function () { if (window.__toggleDev) window.__toggleDev(); }, k: "~" },
+      { t: "Watch ApplySync being built", ic: "▶", run: function () { if (window.__replay) window.__replay("applysync"); } },
+      { t: "Watch I Am Still Alive being built", ic: "▶", run: function () { if (window.__replay) window.__replay("iasa"); } },
+      { t: "Watch me build this site", ic: "▶", run: function () { if (window.__buildMode) window.__buildMode(); } },
       { t: "Replay the intro", ic: "↻", run: function () { window.location.reload(); } }
     ];
 
@@ -246,6 +302,7 @@
     function close() { pal.classList.remove("open"); document.body.classList.remove("cmdk-open"); }
     function run(c) { close(); setTimeout(function () { safe(c.run); }, 60); if (SND) SND.tick(520); }
     function isOpen() { return pal.classList.contains("open"); }
+    window.__palette = { open: open, close: close, toggle: function () { isOpen() ? close() : open(); } };
 
     box.addEventListener("input", filter);
     document.addEventListener("keydown", function (e) {
@@ -295,12 +352,31 @@
           g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
           o.start(t); o.stop(t + 0.14);
         } catch (e) {}
+      },
+      enter: function () {                 // one-shot metallic resonance + shimmer on entering
+        if (muted || !ctx) return;
+        try {
+          var t = ctx.currentTime;
+          [196, 294, 392].forEach(function (f, i) {
+            var o = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
+            o.type = "triangle"; o.frequency.value = f * (1 + i * 0.003);
+            lp.type = "lowpass"; lp.frequency.value = 1500;
+            g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.05 / (i + 1), t + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+            o.connect(lp); lp.connect(g); g.connect(master); o.start(t); o.stop(t + 1.5);
+          });
+          var s = ctx.createOscillator(), sg = ctx.createGain();
+          s.type = "sine"; s.frequency.setValueAtTime(1600, t); s.frequency.exponentialRampToValueAtTime(2600, t + 0.4);
+          sg.gain.setValueAtTime(0, t); sg.gain.linearRampToValueAtTime(0.03, t + 0.05); sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+          s.connect(sg); sg.connect(master); s.start(t); s.stop(t + 0.7);
+        } catch (e) {}
       }
     };
 
     // create the audio context on the first user gesture (browsers require it)
     function firstGesture() {
       ensure(); if (ctx && ctx.resume) ctx.resume(); setBtn();
+      SND.enter();   // metallic resonance the moment you enter
       window.removeEventListener("pointerdown", firstGesture);
       window.removeEventListener("keydown", firstGesture);
     }
@@ -309,9 +385,15 @@
     setBtn();
     if (btn) btn.addEventListener("click", function (e) { e.stopPropagation(); SND.toggle(); });
 
-    // click ticks only
+    // click ticks only — pitch varies by control type
     document.addEventListener("click", function (e) {
-      if (e.target.closest("a, button, .tile, .t-chip, .cmdk-item, .sp-enter, .scrollcue")) SND && SND.tick(540);
+      var el = e.target.closest("a, button, .tile, .t-chip, .cmdk-item, .sp-enter, .scrollcue, .cs-replay, .help-item");
+      if (!el || !SND) return;
+      var f = 540;
+      if (el.classList.contains("tile") || el.classList.contains("cta") || el.classList.contains("cs-replay")) f = 420;
+      else if (el.classList.contains("cmdk-item") || el.classList.contains("help-item")) f = 680;
+      else if (el.classList.contains("t-chip")) f = 600;
+      SND.tick(f);
     });
   });
 
@@ -321,7 +403,7 @@
   safe(function () {
     if (reduce || !("IntersectionObserver" in window)) return;
     var sels = [".band .sec-head", ".work-grid .tile", ".manifesto .man-quote",
-               ".method-grid", ".about-grid", ".about-values", ".foot-top"];
+               ".method-grid", ".brain-card", ".builder-step", ".about-grid", ".about-values", ".foot-top"];
     var els = [];
     sels.forEach(function (s) { $$(s).forEach(function (e) { els.push(e); }); });
     if (!els.length) return;
@@ -343,7 +425,7 @@
     }, { threshold: 0.1, rootMargin: "0px 0px -8% 0px" });
     els.forEach(function (e) { io.observe(e); });
     // failsafe: never leave anything hidden
-    setTimeout(function () { els.forEach(function (e) { e.style.opacity = "1"; e.style.transform = "none"; }); }, 9000);
+    setTimeout(function () { els.forEach(function (e) { e.style.opacity = "1"; e.style.transform = "none"; }); }, 3500);
   });
 
   /* ============================================================
