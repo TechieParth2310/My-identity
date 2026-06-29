@@ -229,6 +229,8 @@
       build:["A 24/7 listener (GramJS) monitoring 50+ Telegram job channels, parsing every new posting.","An AI layer (OpenAI with an NVIDIA NIM fallback) that scores fit and rewrites the résumé per ATS.","Auto-apply + outreach that sends applications and cold emails through the user's own Gmail.","A React 19 dashboard to review, approve and track every application.","A Chrome (Manifest V3) extension that auto-fills application forms across 46+ sites.","Razorpay billing, scheduled jobs via node-cron, deployed on Vercel + Railway."],
       arch:["Telegram listener","AI fit + tailoring","Auto-apply + Gmail","React 19 dashboard","Chrome extension"],
       metrics:[["50+","job channels watched"],["46+","sites auto-filled"],["Solo","built end to end"],["3","sister tools shipped"]],
+      prod:{ stats:[["109","Registered users"],["185","Visitors · last 30 days"],["19","New signups"],["10%","Visitor → signup"]],
+        feats:["Chrome Extension","AI Resume Generator","Telegram Automation","Live Production System"] },
       stack:["React 19","Vite","Tailwind","Express","TypeScript","Firebase","OpenAI","NVIDIA NIM","GramJS","Razorpay","Gmail API","Chrome MV3"] },
     facegpt:{ cat:"02 · AI Reverse Image Search · Google Play", title:"FaceGPT",
       tag:"Point a photo at the internet and get an answer — not a list of links.",
@@ -369,7 +371,15 @@
       '<div class="cs-sec"><div class="l">Stack</div><div class="cs-stack">'+d.stack.map(function(s){return '<span>'+esc(s)+'</span>';}).join('')+'</div></div>'+whyBlock+'</div>';
     var jr=(JOURNEY[id]||[]).map(function(s,i){return '<div class="ct-step" style="animation-delay:'+(i*0.1).toFixed(2)+'s"><span class="ct-dot"></span><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>';}).join('');
     var timeBlock = jr ? '<div class="cs-journey"><div class="l">The journey</div><div class="ct-row">'+jr+'</div></div>' : '';
-    drBody.innerHTML = top + show + '<div class="cs-grid">'+left+right+'</div>' + timeBlock;
+    var prodBlock='';
+    if(d.prod){
+      var pstats=d.prod.stats.map(function(x){return '<div class="cs-prodstat"><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>';}).join('');
+      var pfeats=(d.prod.feats||[]).map(function(f){return '<span class="cs-prodfeat">'+esc(f)+'</span>';}).join('');
+      prodBlock='<div class="cs-prod"><div class="l">Production metrics<span class="cs-prodlive"><i></i>live</span></div>'+
+        '<div class="cs-prodgrid">'+pstats+'</div>'+
+        (pfeats?'<div class="cs-prodfeats">'+pfeats+'</div>':'')+'</div>';
+    }
+    drBody.innerHTML = top + show + prodBlock + '<div class="cs-grid">'+left+right+'</div>' + timeBlock;
     lastFocus=document.activeElement;
     drawer.classList.add("open"); requestAnimationFrame(function(){drawer.classList.add("show");});
     document.body.style.overflow="hidden"; drBody.scrollTop=0; if(drClose)drClose.focus();

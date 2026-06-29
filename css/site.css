@@ -569,6 +569,22 @@ img{display:block;max-width:100%}
 .cs-metric span{font-size:12px;color:var(--mut);display:block;margin-top:6px}
 .cs-stack{display:flex;flex-wrap:wrap;gap:7px}
 .cs-stack span{font-family:var(--mono);font-size:11px;color:var(--ink-soft);border:1px solid var(--line);border-radius:6px;padding:6px 10px}
+/* case — Production metrics (real-usage proof) */
+.cs-prod{max-width:var(--maxw);margin:0 auto;padding:10px var(--gut) 4px}
+.cs-prod .l{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.cs-prodlive{display:inline-flex;align-items:center;gap:6px;color:var(--green);font-size:10px;letter-spacing:.14em}
+.cs-prodlive i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:scrPulse 1.6s ease-in-out infinite}
+.cs-prodgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cs-prodstat{position:relative;overflow:hidden;border:1px solid var(--line2);border-radius:14px;padding:20px 18px;
+  background:radial-gradient(120% 100% at 50% -20%,rgba(199,146,79,.10),transparent 60%),var(--panel)}
+.cs-prodstat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--brass-l),var(--brass-d))}
+.cs-prodstat b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(28px,3.2vw,40px);color:var(--brass);line-height:1}
+.cs-prodstat span{display:block;margin-top:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);line-height:1.45}
+.cs-prodfeats{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.cs-prodfeat{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);
+  border:1px solid var(--line2);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.02)}
+.cs-prodfeat::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
+@media(max-width:760px){.cs-prodgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:840px){.cs-grid{grid-template-columns:1fr;gap:30px}.frame.phone-lg{width:250px}}
 /* case-study journey timeline */
 .cs-journey{max-width:var(--maxw);margin:0 auto;padding:0 var(--gut) 96px}
