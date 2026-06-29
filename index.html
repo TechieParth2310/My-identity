@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Parth Kothawade — AI Product Engineer</title>
+<meta name="description" content="I build AI products that people actually use." />
+<meta name="color-scheme" content="dark" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+
+  <!-- CINEMATIC ENTRANCE / SPLASH -->
+  <div class="splash" id="splash" role="dialog" aria-label="Enter the studio">
+    <div class="sp-bg" id="spBg"></div>
+    <div class="sp-grain"></div>
+    <div class="sp-spot" id="spSpot"></div>
+    <div class="sp-vignette"></div>
+    <canvas class="sp-embers" id="spEmbers"></canvas>
+    <div class="sp-core">
+      <div class="sp-intro" id="spIntro"></div>
+      <h1 class="sp-name">
+        <span class="sp-fname">PARTH</span>
+        <span class="sp-lname">KOTHAWADE</span>
+      </h1>
+      <div class="sp-tag">I build AI products that <span class="rot" id="spRot">people actually use.</span></div>
+      <div class="sp-loadwrap"><div class="sp-load" id="spLoad"></div></div>
+      <div class="sp-status" id="spStatus">waking the studio…</div>
+      <button class="sp-enter" id="spEnter" type="button">Enter the Studio <i>→</i></button>
+      <div class="sp-hint">press <b>Enter</b> · or click anywhere</div>
+    </div>
+  </div>
+
+  <!-- LIVING ATMOSPHERE (site-wide, behind content) -->
+  <div class="atmos" id="atmos" aria-hidden="true"><div class="atmos-plate"></div><canvas id="atmosCanvas"></canvas></div>
+
+  <div class="progress" id="progress"></div>
+  <div class="cur-ring" id="curRing"></div>
+  <div class="cur-dot" id="curDot"></div>
+
+  <!-- NAV -->
+  <header class="nav">
+    <a class="brand" href="#top"><span class="bn">PARTH</span><span class="bs">The Studio</span></a>
+    <nav class="links">
+      <a href="#work">The Work</a>
+      <a href="#method">The Method</a>
+      <a href="#about">About</a>
+      <a class="cta" href="#contact">Start a Project<i></i></a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-bg">
+      <div class="hero-stage" id="heroStage">
+        <img class="fig-img" src="assets/hero-stage.jpg" alt="" />
+        <canvas class="hero-gl" id="heroGL" aria-hidden="true"></canvas>
+        <div class="hero-screen" id="heroScreen" aria-hidden="true">
+          <div class="scr-feed" id="screenFeed"></div>
+          <div class="scr-glass"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scrim"></div>
+    <div class="hero-inner">
+      <p class="eyebrow a1">AI Product Engineer</p>
+      <h1 class="h-title">
+        <span class="a2">I build AI&nbsp;products</span><br>
+        <span class="a3">that people</span><br>
+        <span class="a3"><em>actually&nbsp;use.</em></span>
+      </h1>
+      <p class="h-sub a4">I don't prompt models. I design the systems around them, make the architectural calls, and ship products that create real impact — in days, not months.</p>
+      <div class="h-stats a5">
+        <div class="st"><b>00</b><span>Days<br>not months</span></div>
+        <div class="st"><b>00+</b><span>Products<br>shipped</span></div>
+        <div class="st"><b>₹00L+</b><span>Cost replaced<br>for clients</span></div>
+      </div>
+      <div class="h-now a6"><span class="dot"></span>Now showing — <b>ApplySync</b> · live in production</div>
+    </div>
+    <a class="scrollcue" href="#work" aria-label="Scroll">scroll<i></i></a>
+  </section>
+
+  <!-- SELECTED WORK -->
+  <section class="band" id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">01 — The Work</div>
+        <h2 class="sec-title">Real products. Real users. Real impact.</h2>
+        <p class="sec-lead">Shipped to app stores and production — not demos.</p>
+      </div>
+      <div class="work-grid" id="workGrid">
+        <button class="tile" data-proj="applysync">
+          <span class="tile-shot site"><img src="assets/ApplySync.png" alt="ApplySync" loading="lazy"></span>
+          <span class="tile-foot"><span class="tile-c">01 · AI Job Automation · My startup</span><span class="tile-t">ApplySync</span><span class="tile-go">View case study <i>→</i></span></span>
+        </button>
+        <button class="tile" data-proj="facegpt">
+          <span class="tile-shot app"><span class="phone"><span class="phone-notch"></span><img src="assets/FaceGPT.png" alt="FaceGPT" loading="lazy"></span><span class="tile-badge">Android · Live</span></span>
+          <span class="tile-foot"><span class="tile-c">02 · AI Reverse Image Search</span><span class="tile-t">FaceGPT</span><span class="tile-go">View case study <i>→</i></span></span>
+        </button>
+        <button class="tile" data-proj="skingpt">
+          <span class="tile-shot app"><span class="phone"><span class="phone-notch"></span><img src="assets/SkinGPT.png" alt="SkinGPT" loading="lazy"></span><span class="tile-badge">iOS · Live</span></span>
+          <span class="tile-foot"><span class="tile-c">03 · AI Personal Style</span><span class="tile-t">SkinGPT</span><span class="tile-go">View case study <i>→</i></span></span>
+        </button>
+        <button class="tile" data-proj="iasa">
+          <span class="tile-shot site"><img src="assets/I%20Am%20Still%20Alive%20website.png" alt="I Am Still Alive" loading="lazy"></span>
+          <span class="tile-foot"><span class="tile-c">04 · Healthcare AI · Production</span><span class="tile-t">I Am Still Alive</span><span class="tile-go">View case study <i>→</i></span></span>
+        </button>
+        <button class="tile" data-proj="conference">
+          <span class="tile-shot site"><img src="assets/Conference%20module.png" alt="Conference & Events Platform" loading="lazy"></span>
+          <span class="tile-foot"><span class="tile-c">05 · Events Platform · Enterprise</span><span class="tile-t">Conference &amp; Events Platform</span><span class="tile-go">View case study <i>→</i></span></span>
+        </button>
+        <button class="tile" data-proj="portal">
+          <span class="tile-shot site"><img src="assets/Management%20portal.png" alt="Management Portal" loading="lazy"></span>
+          <span class="tile-foot"><span class="tile-c">06 · Operations Platform · In daily use</span><span class="tile-t">Management Portal</span><span class="tile-go">View case study <i>→</i></span></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO (cinematic band) -->
+  <section class="manifesto">
+    <div class="man-bg"><img src="assets/hero-wide-b.jpg" alt="" data-par="0.18" data-scale="1.18" /></div>
+    <div class="man-scrim"></div>
+    <div class="wrap man-inner">
+      <p class="man-quote">“The hardest, most human part isn't writing the code.<br>It's deciding <em>what</em> to build, and being right.”</p>
+    </div>
+  </section>
+
+  <!-- THE METHOD -->
+  <section class="band" id="method">
+    <div class="wrap method-grid">
+      <div class="method-copy">
+        <div class="sec-no">02 — The Method</div>
+        <h2 class="sec-title sm">Ask my work.</h2>
+        <p class="sec-lead">Don't take my word for it — interrogate the record. Pick a question; I'll answer it from real projects.</p>
+        <a class="link-arrow" href="#contact">Start a conversation →</a>
+      </div>
+      <div class="terminal" id="terminal">
+        <div class="t-bar"><i></i><i></i><i></i></div>
+        <div class="t-body">
+          <div class="t-q" id="tQ">&gt; how do you decide what to build?</div>
+          <pre class="t-a" id="tA">I start from the problem, not the model. What hurts, who feels it, and is AI actually the right tool? Most ideas die here — and that's the point. I only build what earns a place in production.</pre>
+        </div>
+        <div class="t-chips" id="tChips"></div>
+        <form class="t-foot" id="tForm"><span class="tp">&gt;</span><input id="tInput" class="t-input" type="text" placeholder="ask me anything about my work…" autocomplete="off" aria-label="Ask my work" /><span class="rag">powered by RAG</span></form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="band about" id="about">
+    <div class="wrap about-grid">
+      <div class="about-portrait" data-par="0.07"><img src="My%20portrait.png" alt="Parth Kothawade" /></div>
+      <div class="about-copy">
+        <div class="sec-no">03 — About</div>
+        <h2 class="about-h">I don't build demos.<br>I build products.</h2>
+        <p class="about-p">I care about systems that work. I care about users who trust them. I care about impact that compounds. I'm an AI-native builder from Pune — I design the architecture, direct the AI, and own the outcome end to end.</p>
+        <div class="sig">Parth</div>
+      </div>
+      <div class="about-values">
+        <div class="val"><b>Shipped</b><span>Real products</span></div>
+        <div class="val"><b>Solved</b><span>Real problems</span></div>
+        <div class="val"><b>Created</b><span>Real impact</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot" id="contact">
+    <div class="wrap">
+      <div class="foot-top">
+        <div>
+          <p class="foot-lead">Let's build something<br>that actually matters.</p>
+          <a class="cta big" href="mailto:parthkothawade2310@gmail.com">Start a Project →</a>
+        </div>
+        <div class="foot-status">
+          <div class="fs"><span>Location</span><b>Pune, India</b></div>
+          <div class="fs"><span>Time</span><b id="clock">—</b></div>
+          <div class="fs"><span>Status</span><b class="ok">Available for meaningful work<i></i></b></div>
+          <div class="fs"><span>Connect</span><b><a href="https://github.com/TechieParth2310" target="_blank" rel="noopener">GitHub</a> · <a href="mailto:parthkothawade2310@gmail.com">Email</a></b></div>
+        </div>
+      </div>
+      <div class="foot-bottom"><span>© 2026 Parth Kothawade</span><span>Built with obsession. Shipped with impact.</span></div>
+    </div>
+  </footer>
+
+  <!-- FULL-SCREEN CASE STUDY -->
+  <div class="case" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle">
+    <div class="case-scrim" id="drScrim"></div>
+    <div class="case-panel">
+      <button class="case-close" id="drClose" aria-label="Close case study">✕</button>
+      <div class="case-scroll" id="drBody"></div>
+    </div>
+  </div>
+
+  <!-- COMMAND PALETTE -->
+  <div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="cmdk-box">
+      <input class="cmdk-in" id="cmdkIn" type="text" placeholder="Type a command or search…" autocomplete="off" />
+      <div class="cmdk-list" id="cmdkList"></div>
+      <div class="cmdk-hint">↑ ↓ navigate · ↵ run · esc close</div>
+    </div>
+  </div>
+
+  <!-- SOUND TOGGLE -->
+  <button class="snd" id="snd" type="button" aria-label="Toggle sound"><span class="bars"><i></i><i></i><i></i><i></i></span></button>
+
+  <script src="js/site.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/next.js"></script>
+  <script src="js/atmos.js"></script>
+</body>
+</html>
